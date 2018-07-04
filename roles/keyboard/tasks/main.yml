@@ -1,0 +1,6 @@
+- name: Set Console Keyboard layout
+  become: yes
+  lineinfile:
+    dest: '/etc/vconsole.conf'
+    line: 'KEYMAP=de-latin1'
+
