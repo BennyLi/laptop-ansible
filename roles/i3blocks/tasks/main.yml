@@ -1,0 +1,29 @@
+- name: i3blocks > Install
+  become: yes
+  package:
+    name: i3blocks
+    state: present
+  tags:
+    - desktop:i3:bar:blocks
+
+- name: i3blocks > Install dependencies
+  become: yes
+  package:
+    name:  '{{ item }}'
+    state: present
+  with_items:
+    - acpi        # battery status
+  tags:
+    - desktop:i3:bar:blocks
+
+- name: i3blocks > Link config file
+  file:
+    src:   '{{ dotfiles_path }}/i3/i3blocks.conf'
+    dest:  '/home/{{ user.name }}/.i3blocks.conf'
+    state: link
+    owner: '{{ user.name }}'
+    group: '{{ user.group }}'
+    mode:  'u=rw,g=r,o=r'
+  tags:
+    - dotfiles
+    - desktop:i3:bar:blocks
