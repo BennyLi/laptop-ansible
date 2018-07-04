@@ -1,0 +1,20 @@
+- name: Setup my laptop with ansible, cause I can
+  hosts: all
+  roles:
+
+    - time
+
+    - fonts
+    - colors
+    
+    ##### Keyboard setup {{{1
+    - keyboard
+
+    ##### Terminal stuff {{{1
+    - terminal
+
+    ##### Window manager {{{1
+    - i3wm
+    - i3blocks
+    - compton
+
