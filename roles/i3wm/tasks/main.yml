@@ -1,0 +1,16 @@
+# TODO: Install i3-gaps from aur
+# First: Add submodule https://github.com/kewlfft/ansible-aur
+# Second: Install trizen (as pacaur is unmaintained) https://github.com/trizen/trizen
+# Third: Install i3-gaps
+- name: Link i3 config file
+  file:
+    src:   '/home/{{ user.name }}/dev/private/laptop/dotfiles/i3/config'
+    dest:  '/home/{{ user.name }}/.config/i3/config'
+    state: link
+    owner: '{{ user.name }}'
+    group: '{{ user.group }}'
+    mode:  'u=rw,g=r,o=r'
+  tags:
+    - dotfiles
+    - desktop:i3
+
