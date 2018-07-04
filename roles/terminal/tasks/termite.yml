@@ -1,0 +1,32 @@
+- name: Termite > Install 
+  become: yes
+  package:
+    name:  termite
+    state: present
+  tags:
+    - terminal
+    - terminal:termite
+
+- name: Termite > Ensure config directory
+  file:
+    path:  '/home/{{ user.name }}/.config/termite'
+    state: directory
+    owner: '{{ user.name }}'
+    group: '{{ user.group }}'
+  tags:
+    - dotfiles
+    - terminal
+    - terminal:termite
+    
+- name: Termite > Link config
+  file:
+    src:   '/home/{{ user.name }}/dev/private/laptop/dotfiles/termite/config'
+    dest:  '/home/{{ user.name }}/.config/termite/config'
+    state: link
+    owner: '{{ user.name }}'
+    group: '{{ user.group }}'
+    mode:  'u=rw,g=r,o=r'
+  tags:
+    - dotfiles
+    - terminal
+    - terminal:termite
