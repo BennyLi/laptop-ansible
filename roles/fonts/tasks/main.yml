@@ -1,0 +1,25 @@
+- name: Set font paths
+  set_fact:
+    fonts_path:        '/home/{{ user.name }}/.local/share/fonts' 
+    fonts_config_path: '/home/{{ user.name }}/.config/fontconfig/conf.d'
+  tags:
+    - fonts
+
+- name: Ensure fonts directories
+  file:
+    path:  '{{ fonts_path }}'
+    state: directory
+    owner: '{{ user.name }}'
+    group: '{{ user.group }}'
+    mode:  'u=rwx,g=rx,o=rx'
+  tags:
+    - fonts
+
+- import_tasks: nerdfonts.yml
+
+- name: Update font cache
+  shell: fc-cache -vf '{{ fonts_path }}'
+  tags:
+    - fonts
+
+- import_tasks: fontmanager.yml
