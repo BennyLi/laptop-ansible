@@ -1,0 +1,16 @@
+- name: Install ntp for time syncing
+  become: yes
+  package:
+    name: ntp
+    state: present
+  tags:
+    - time:ntp
+
+
+- name: Enable ntp service
+  become: yes
+  service:
+    name: ntpd
+    state: started
+  tags:
+    - time:ntp
