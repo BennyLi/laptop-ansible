@@ -1,0 +1,19 @@
+- name: Install rofi
+  become: yes
+  package:
+    name: rofi
+    state: present
+  tags:
+    - desktop:rofi
+
+- name: Link config file
+  file:
+    state: link
+    src:   '{{ dotfiles_path}}/rofi/rofi.conf'
+    dest:  '/home/{{ user.name }}/.Xresources.d/rofi'
+    owner: '{{ user.name }}'
+    group: '{{ user.group }}'
+    mode:  'u=rw,g=r,o=r'
+  tags:
+    - dotfiles
+    - desktop:rofi
