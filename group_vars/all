@@ -1,2 +1,1 @@
-git_user_name: 'Benny Li'
-git_user_email: 'dev@benny-li.de'
+dotfiles_path: '{{ playbook_dir }}/../dotfiles'
