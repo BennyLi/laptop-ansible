@@ -1,1 +1,1 @@
-dotfiles_path: '{{ playbook_dir }}/../dotfiles'
+dotfiles_path: '/home/{{ user_name }}/.dotfiles'
