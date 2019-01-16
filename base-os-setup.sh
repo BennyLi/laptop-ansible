@@ -2,15 +2,24 @@
 
 # Sources of this process:
 # * https://legacy.thomas-leister.de/arch-linux-luks-verschluesselt-auf-uefi-system-installieren-2/
+# * https://disconnected.systems/blog/archlinux-installer/#the-complete-installer-script
+
+
+# Exit with a clear message on failures
+set -uo pipefail
+trap 's=$?; echo "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 
 
 # Load the key for your country
 loadkeys de-latin1-nodeadkeys
 
-# We want to use encryption, so we have to load the kernel module for this
-modprobe dm-crypt
+# Setup clock
+timedatectl set-ntp true
 
-hostname=$(dialog --stdout --inputbox "Enter hostname" 0 0) || exit 1
+
+#####  Get some user input for variable data  ##### {{{1
+
+hostname=$(dialog --stdout --inputbox "Enter hostname / name of your computer" 0 0) || exit 1
 clear
 : ${hostname:?"hostname cannot be empty"}
 
@@ -29,60 +38,65 @@ devicelist=$(lsblk -dplnx size -o name,size | grep -Ev "boot|rpmb|loop" | tac)
 device=$(dialog --stdout --menu "Select installation disk" 0 0 0 ${devicelist}) || exit 1
 clear
 
-### Set up logging ###
+
+#####  Set up logging  ##### {{{1
 exec 1> >(tee "stdout.log")
 exec 2> >(tee "stderr.log")
 
-timedatectl set-ntp true
 
-
-
-# Lets connect to wifi
-wifi-menu
-
-
-# Let's do the partitioning
-# First check which one is your main harddrive
-lsblk
-read -p "Enter your device [/dev/sda]: " installdisk
-if [ -z "$installdisk" ]; then
-  installdisk="/dev/sda"
-fi
-
-read -p "We will do the partitioning on $installdisk. This will erase all data! Is $installdisk correct? [y/N] " correct
-
-if [ "$correct" == "Y" ] || [ "$correct" == "y" ]; then
-  echo "DO IT"
+#####  Internet connectivity  ##### {{{1
+# Lets connect to the internet
+wifi=$(dialog --stdout --menu "Do you want to connect via wifi or ethernet?" 0 0 0 0 ethernet 1 wifi) || exit 1
+if [ "$wifi" == "1" ]; then
+  wifi-menu
 else
-  echo "Aborting..."
+  interfaces=$(ip -o link | awk '{ gsub(":","",$1); gsub(":","",$2); print $2 " " $1 }')
+  interface=$(dialog --stdout --menu "Select network interface" 0 0 0 $interfaces)
+  dhcpcd $interface
 fi
+
+# Check connectivity
+ping -c 1 8.8.8.8 >> /dev/null
+[[ "$?" == "0" ]] || ( echo "No network connection! Please try again..."; exit 1; )
+
+
+#####  Partitioning  ##### {{{1
+correct=$(dialog --stdout --menu "We will do the partitioning on $device. This will erase all data! Is $device correct?" 0 0 0 N No Y Yes)
+[[ "$correct" == "Y" ]] || ( echo "Aborting due to user interaction..."; exit 1 )
 
 
 # We will now do the partitioning
 # First: Erase the current partitions from the disk
 echo "Erasing old partition scheme..."
-wipefs --all --backup $installdisk
+wipefs --all --backup $device
 echo "Backup file of old partition scheme should be here: $(ls ~/wipefs-*.bak)"
 
 echo "Converting disk to GPT format"
-sgdisk --mbrtogpt $installdisk
+sgdisk --mbrtogpt $device
 echo "Creating EFI boot partition..."
-sgdisk --new 1:2048:+512M -t ef00 --change-name="EFI Boot2" $installdisk
+sgdisk --new 1:2048:+512M -t ef00 --change-name="EFI Boot2" $device
 echo "Creating Linux LVM partition filling rest of device..."
-sgdisk --new 2:0:0 --change-name="Linux LVM" $installdisk
+sgdisk --new 2:0:0 --change-name="Linux LVM" $device
 echo "Partitioning done!"
 echo
 
 
+#####  Encryption  ##### {{{1
+
+# We want to use encryption, so we have to load the kernel module for this
+modprobe dm-crypt
+
 echo "Next step is the encryption."
-echo "A benchmark will be run and you can choose the emcryption type."
-read -p "Hit any key to continue..."
-cryptsetup benchmark
-read -p "Enter the encryption you want to use: " $encryptiontype
-cryptsetup -c $encryptiontype -y -s 512 luksFormat ${installdisk}2
+#echo "A benchmark will be run and you can choose the encryption type."
+#read -p "Hit any key to continue..."
+#cryptsetup benchmark
+#read -p "Enter the encryption you want to use: " $encryptiontype
+encryptiontype="aes-xts-plain"
+keysize="512"
+cryptsetup -c $encryptiontype -y -s $keysize luksFormat ${device}2
 
 echo "Creating LVM container..."
-cryptsetup luksOpen ${installdisk}2 lvm
+cryptsetup luksOpen ${device}2 lvm
 pvcreate /dev/mapper/lvm
 vgcreate main /dev/mapper/lvm
 swap_size=$(free --mebi | awk '/Mem:/ {print $2}')
@@ -90,18 +104,47 @@ swap_end=$(( $swap_size + 129 + 1 ))MiB
 lvcreate -L ${swap_size} -n swap main
 lvcreate -l 100%FREE -n root main
 
+echo "Creating file system..."
 mkswap /dev/mapper/main-swap
 mkfs.ext4 /dev/mapper/main-root
 
+echo "Mounting system..."
 mount /dev/mapper/main-root /mnt
 mkdir /mnt/boot
-mount ${installdisk}1 /mnt/boot
+mount ${device}1 /mnt/boot
 swapon /dev/mapper/main-swap
 
+
+#####  System preperation and base install  ##### {{{1
+
+echo "Updating mirror list for germany..."
 mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | tee -a /etc/pacman.d/mirrorlist
 
-pacstrap /mnt/ base base-devel wpa_supplicant dialog
+echo "Installing base system packages..."
+pacstrap /mnt/ base base-devel wpa_supplicant dialog git zsh
+
+echo "Generating fstab..."
 genfstab -p /mnt > /mnt/etc/fstab
 
-arch-chroot /mnt/
+echo $hostname > /mnt/etc/hostname
+echo "LANG=de_DE.UTF-8" > /mnt/etc/locale.conf
+sed -i 's/^#de_DE/de_DE/g' /mnt/etc/locale.gen
+arch-chroot /mnt locale-gen
+
+echo KEYMAP=de-latin1 > /mnt/etc/vconsole.conf
+arch-chroot /mnt/ ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+
+
+#####  Configure boot  ##### {{{1
+
+# TODO
+
+
+
+
+
+#####  User setup  ##### {{{1
+
+arch-chroot /mnt useradd --create-home --user-group --shell /usr/bin/zsh --groups wheel,uucp,video,audio,storage,optical,games,input "$user"
+arch-chroot /mnt chsh -s /usr/bin/zsh
