@@ -122,7 +122,7 @@ mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | tee -a /etc/pacman.d/mirrorlist
 
 echo "Installing base system packages..."
-pacstrap /mnt/ base base-devel wpa_supplicant dialog git zsh gummiboot
+pacstrap /mnt/ base base-devel wpa_supplicant dialog git fish gummiboot
 
 echo "Generating fstab..."
 genfstab -p /mnt > /mnt/etc/fstab
