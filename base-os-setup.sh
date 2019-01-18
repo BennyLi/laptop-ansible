@@ -105,7 +105,7 @@ keysize="512"
 cryptsetup -c $encryptiontype -y -s $keysize luksFormat ${part_root}
 
 echo "Creating LVM container..."
-cryptsetup luksOpen ${part_root}lvm
+cryptsetup luksOpen ${part_root} lvm
 pvcreate /dev/mapper/lvm
 vgcreate main /dev/mapper/lvm
 swap_size=$(free --mebi | awk '/Mem:/ {print $2}')
