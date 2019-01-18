@@ -81,9 +81,9 @@ echo "Backup file of old partition scheme should be here: $(ls ~/wipefs-*.bak)"
 echo "Converting disk to GPT format"
 sgdisk --mbrtogpt $device
 echo "Creating EFI boot partition..."
-sgdisk --new 1:2048:+512M -t ef00 --change-name="EFI Boot2" $device
+sgdisk --new=1:2048:+512M --typecode=1:EF00 --change-name=1:"EFI Boot2" $device
 echo "Creating Linux LVM partition filling rest of device..."
-sgdisk --new 2:0:0 --change-name="Linux LVM" $device
+sgdisk --new=2:0:0 --change-name=2:"Linux LVM" $device
 echo "Partitioning done!"
 echo
 
