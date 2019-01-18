@@ -131,7 +131,7 @@ mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | tee -a /etc/pacman.d/mirrorlist
 
 echo "Installing base system packages..."
-pacstrap /mnt/ base base-devel wpa_supplicant dialog git fish ansible gummiboot
+pacstrap /mnt/ base base-devel wpa_supplicant dialog intel-ucode git fish ansible docker
 
 echo "Generating fstab..."
 genfstab -p /mnt > /mnt/etc/fstab
@@ -154,26 +154,44 @@ arch-chroot /mnt/ ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 echo "Configuring bootmenu..."
 sed -i 's/^HOOKS=.*/HOOKS="base udev autodetect modconf block keyboard keymap encrypt lvm2 filesystems fsck"/g' /mnt/etc/mkinitcpio.conf
 arch-chroot /mnt mkinitcpio -p linux
-arch-chroot /mnt gummiboot --path=/boot install
+arch-chroot /mnt bootctl --path=/boot install
 
 cat <<EOF > /mnt/boot/loader/loader.conf
 default arch
+timeout 0
+editor  no
+console-mode max
 EOF
 
 cat <<EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux
+initrd   /intel_ucode.img
 initrd   /initramfs-linux.img
 options  cryptdevice=${part_root}:main root=/dev/mapper/main-root resume=/dev/mapper/main-swap lang=de locale=de_DE.UTF-8
 EOF
 
+# Auto update boot stuff
+cat <<EOF > /mnt/etc/pacman.d/hooks/systemd-boot.hook
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = systemd
+
+[Action]
+Description = Updating systemd-boot
+When = PostTransaction
+Exec = /usr/bin/bootctl update
+EOF
 
 #####  User setup  ##### {{{1
 
 echo "Setting up you (the user)..."
-arch-chroot /mnt useradd --create-home --user-group --shell /usr/bin/fish --groups wheel,uucp,video,audio,storage,optical,games,input "$user"
+arch-chroot /mnt useradd --create-home --user-group --shell /usr/bin/fish --groups wheel,uucp,video,audio,storage,optical,games,input,docker "$user"
 arch-chroot /mnt chsh -s /usr/bin/fish
 
+echo "Enable the docker service..."
+arch-chroot /mnt systemctl enable docker.service
 
 #####  Finish setup  ##### {{{1
 
