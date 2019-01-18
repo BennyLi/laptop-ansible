@@ -87,6 +87,8 @@ sgdisk --new=2:0:0 --change-name=2:"Linux LVM" $device
 echo "Partitioning done!"
 echo
 
+part_boot="$(ls ${device}* | grep -E "^${device}p?1$")"
+part_root="$(ls ${device}* | grep -E "^${device}p?2$")"
 
 #####  Encryption  ##### {{{1
 
@@ -100,10 +102,10 @@ echo "Next step is the encryption."
 #read -p "Enter the encryption you want to use: " $encryptiontype
 encryptiontype="aes-xts-plain"
 keysize="512"
-cryptsetup -c $encryptiontype -y -s $keysize luksFormat ${device}2
+cryptsetup -c $encryptiontype -y -s $keysize luksFormat ${part_root}
 
 echo "Creating LVM container..."
-cryptsetup luksOpen ${device}2 lvm
+cryptsetup luksOpen ${part_root}lvm
 pvcreate /dev/mapper/lvm
 vgcreate main /dev/mapper/lvm
 swap_size=$(free --mebi | awk '/Mem:/ {print $2}')
@@ -118,7 +120,7 @@ mkfs.ext4 /dev/mapper/main-root
 echo "Mounting system..."
 mount /dev/mapper/main-root /mnt
 mkdir /mnt/boot
-mount ${device}1 /mnt/boot
+mount ${part_boot} /mnt/boot
 swapon /dev/mapper/main-swap
 
 
@@ -162,7 +164,7 @@ cat <<EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux
 initrd   /initramfs-linux.img
-options  cryptdevice=${device}2:main root=/dev/mapper/main-root resume=/dev/mapper/main-swap lang=de locale=de_DE.UTF-8
+options  cryptdevice=${part_root}:main root=/dev/mapper/main-root resume=/dev/mapper/main-swap lang=de locale=de_DE.UTF-8
 EOF
 
 
