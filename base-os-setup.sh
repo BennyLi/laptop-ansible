@@ -196,6 +196,9 @@ echo "Setting up you (the user)..."
 arch-chroot /mnt useradd --create-home --user-group --shell /usr/bin/fish --groups wheel,uucp,video,audio,storage,optical,games,input "$user"
 arch-chroot /mnt chsh -s /usr/bin/fish
 
+echo "$user:$password" | chpasswd --root /mnt
+echo "root:$password" | chpasswd --root /mnt
+
 #####  Finish setup  ##### {{{1
 
 umount /mnt/boot
