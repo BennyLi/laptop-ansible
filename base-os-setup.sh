@@ -146,6 +146,7 @@ arch-chroot /mnt locale-gen
 
 echo "Keyboard layout and localtime..."
 echo KEYMAP=de-latin1 > /mnt/etc/vconsole.conf
+rm -f /mnt/etc/localtime
 arch-chroot /mnt/ ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 
