@@ -176,6 +176,8 @@ options  cryptdevice=${part_root}:main root=/dev/mapper/main-root resume=/dev/ma
 EOF
 
 # Auto update boot stuff
+# Ensure directory exists first
+mkdir -p /mnt/etc/pacman.d/hooks
 cat <<EOF > /mnt/etc/pacman.d/hooks/systemd-boot.hook
 [Trigger]
 Type = Package
