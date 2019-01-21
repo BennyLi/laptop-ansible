@@ -170,7 +170,7 @@ EOF
 cat <<EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux
-initrd   /intel_ucode.img
+initrd   /intel-ucode.img
 initrd   /initramfs-linux.img
 options  cryptdevice=${part_root}:main root=/dev/mapper/main-root resume=/dev/mapper/main-swap lang=de locale=de_DE.UTF-8
 EOF
