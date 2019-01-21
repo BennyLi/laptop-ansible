@@ -199,6 +199,11 @@ arch-chroot /mnt chsh -s /usr/bin/fish
 echo "$user:$password" | chpasswd --root /mnt
 echo "root:$password" | chpasswd --root /mnt
 
+cat <<EOF > /mnt/etc/sudoers.d/01_benny
+$user   ALL=(ALL) ALL
+$user   NOPASSWD: /usr/bin/halt,/usr/bin/poweroff,/usr/bin/reboot
+EOF
+
 #####  Finish setup  ##### {{{1
 
 umount /mnt/boot
