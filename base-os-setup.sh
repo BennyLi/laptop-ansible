@@ -90,6 +90,9 @@ echo
 part_boot="$(ls ${device}* | grep -E "^${device}p?1$")"
 part_root="$(ls ${device}* | grep -E "^${device}p?2$")"
 
+mkfs.fat -F32 $part_boot
+
+
 #####  Encryption  ##### {{{1
 
 # We want to use encryption, so we have to load the kernel module for this
