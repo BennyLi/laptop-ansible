@@ -1,0 +1,54 @@
+---
+  - name: Install ranger dependencies
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python
+      - less
+      - file
+      - atool
+      - w3m
+      - mupdf-tools
+      - perl-image-exiftool
+    tags:
+      - terminal:ranger:deps
+
+  - name: Install ranger python dependencies
+    become_user: "{{ user_name }}"
+    pip:
+      name:
+        - Pygments
+        - chardet
+    tags:
+      - terminal:ranger:deps
+
+  - name: Get ranger sources
+    become: yes
+    git:
+      repo: https://github.com/ranger/ranger.git
+      dest: /usr/local/src/ranger
+    tags:
+      - terminal:ranger:src
+
+  - name: Build and install ranger
+    become: yes
+    make:
+      chdir: /usr/local/src/ranger
+      target: install
+    tags:
+      - terminal:ranger
+
+  - name: Link ranger dotfiles
+    file:
+      src: "/home/{{ user_name }}/.dotfiles/ranger/{{ item }}"
+      dest: "/home/{{ user_name }}/.config/ranger/{{ item }}"
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+    with_items:
+      - rc.conf
+      - rifle.conf
+      - scope.sh
+    tags:
+      - terminal:ranger:dotfiles
