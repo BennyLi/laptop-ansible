@@ -1,0 +1,17 @@
+---
+- name: Get pikaur - an AUR helper - sources
+  become: yes
+  git:
+    repo: https://aur.archlinux.org/pikaur.git
+    dest: /usr/local/src/pikaur
+  tags:
+    - aur:helper
+
+- name: Install pikaur - an AUR helper
+  become: yes
+  shell: makepkg -fsri
+  args:
+    chdir: /usr/local/src/pikaur
+  tags:
+    - aur:helper
+   
