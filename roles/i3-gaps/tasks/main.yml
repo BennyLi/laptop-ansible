@@ -1,0 +1,4 @@
+---
+  - name: Install i3 gaps from AUR
+    become: yes
+    shell: pikaur -Sy --noconfirm i3-gaps-next-git 
