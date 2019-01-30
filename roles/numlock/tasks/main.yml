@@ -1,0 +1,6 @@
+---
+  - name: Activate numlock on boot
+    become: yes
+    copy:
+      src: files/activate-numlock.conf
+      dest: /etc/systemd/system/getty@.service.d/activate-numlock.conf
