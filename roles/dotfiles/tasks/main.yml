@@ -1,0 +1,7 @@
+---
+  - name: Get the dotfiles
+    git:
+      repo: "ssh://git@github.com/BennyLi/dotfiles.git"
+      dest: "/home/{{ user_name }}/.dotfiles"
+      key_file: "/home/{{ user_name }}/.ssh/github_id_rsa"
+      accept_hostkey: yes

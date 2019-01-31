@@ -1,0 +1,32 @@
+---
+- name: Install vim
+  become: yes
+  package:
+    name: vim
+    state: present
+    
+- name: Ensure vim autoload directory
+  file:
+    path: "/home/{{ user_name }}/.vim/autoload"
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_group }}"
+
+- name: Install plug
+  get_url:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest: "/home/{{ user_name }}/.vim/autoload/plug.vim"
+    owner: "{{ user_name }}"
+    group: "{{ user_group }}"
+
+
+- name: Link config file
+  file:
+    src: "/home/{{ user_name }}/.dotfiles/vim/.vimrc"
+    dest: "/home/{{ user_name }}/.vimrc"
+    owner: "{{ user_name }}"
+    group: "{{ user_group }}"
+    state: link
+
+- name: Install vim plugins
+  shell: vim +PlugInstall +qall
