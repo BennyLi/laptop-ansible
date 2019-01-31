@@ -1,4 +1,10 @@
 ---
+  - name: Ensure directories
+    become: yes
+    file:
+      path: /etc/systemd/system/getty@.service.d
+      state: directory
+
   - name: Activate numlock on boot
     become: yes
     copy:
