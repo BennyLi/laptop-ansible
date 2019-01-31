@@ -1,0 +1,20 @@
+---
+  - name: Install some default fonts
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - terminus-font
+    tags:
+      - fonts
+
+  - name: Install some additional fonts from the AUR
+    become: yes
+    shell: "pikaur -Sy --noconfirm {{ item }}"
+    with_items:
+      - nerd-fonts-source-code-pro
+      #- nerd-fonts-complete # very big package
+    tags:
+      - fonts
+    
