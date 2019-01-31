@@ -6,6 +6,7 @@
       state: present
     with_items:
       - python
+      - python-pip
       - less
       - file
       - atool
@@ -16,7 +17,7 @@
       - terminal:ranger:deps
 
   - name: Install ranger python dependencies
-    become_user: "{{ user_name }}"
+    become: yes
     pip:
       name:
         - Pygments
@@ -40,10 +41,18 @@
     tags:
       - terminal:ranger
 
+  - name: Ensure config directory
+    file:
+      path: "/home/{{ user_name }}/.config/ranger"
+      state: directory 
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+
   - name: Link ranger dotfiles
     file:
       src: "/home/{{ user_name }}/.dotfiles/ranger/{{ item }}"
       dest: "/home/{{ user_name }}/.config/ranger/{{ item }}"
+      state: link
       owner: "{{ user_name }}"
       group: "{{ user_group }}"
     with_items:
