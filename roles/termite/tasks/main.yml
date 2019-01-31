@@ -1,0 +1,9 @@
+---
+  - name: Install termite terminal emulator
+    become: yes
+    package:
+      name: termite
+      state: present
+    tags:
+      - terminal
+      - termite
