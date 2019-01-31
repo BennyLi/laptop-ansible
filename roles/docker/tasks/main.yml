@@ -1,0 +1,17 @@
+---
+  - name: Install docker
+    become: yes
+    package:
+      name: docker
+      state: present
+    tags:
+      - docker
+
+  - name: Enable and start docker service
+    become: yes
+    service:
+      name: docker
+      enabled: yes
+      state: started
+    tags:
+      - docker
