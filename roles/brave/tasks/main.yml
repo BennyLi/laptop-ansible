@@ -1,0 +1,16 @@
+---
+  - name: Install Brave browser
+    become: yes
+    shell: pikaur -Sy --noconfirm brave-bin
+    tags:
+      - browser:brave
+
+  - name: Enable sandboxing
+    become: yes
+    copy:
+      src: files/unprivileged_userns_clone.conf
+      dest: /etc/sysctl.d/unprivileged_userns_clone.conf
+    tags:
+      - browser:brave
+      - kernelparameter
+
