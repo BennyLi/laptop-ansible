@@ -1,17 +1,30 @@
 - name: Base setup for all devices
   hosts: all
   roles:
-    - todo
+    - pikaur
+    - docker
+    - numlock
+    - ssh
+    - fonts
+      #- dotfiles
+    - vim
+    - ranger
 
-- name: Special stuff for private devices only
-  hosts:
-    - private-laptop
-  roles:
-    - todo
+    # Desktop
+    - i3-gaps
+    - termite
+    - rofi
+    - brave
 
-    - name: Special stuff for work - employe devices only
-  hosts:
-    - work-laptop
-  roles:
-    - todo
+#- name: Special stuff for private devices only
+#  hosts:
+#    - private-laptop
+#  roles:
+#    - todo
+
+#    - name: Special stuff for work - employe devices only
+#  hosts:
+#    - work-laptop
+#  roles:
+#    - todo
 
