@@ -1,5 +1,8 @@
 #! /usr/bin/env sh
 
+# Get this script via https:/git.io/fhlfO
+
+
 # Sources of this process:
 # * https://legacy.thomas-leister.de/arch-linux-luks-verschluesselt-auf-uefi-system-installieren-2/
 # * https://disconnected.systems/blog/archlinux-installer/#the-complete-installer-script
@@ -143,8 +146,9 @@ echo "Setting hostname..."
 echo $hostname > /mnt/etc/hostname
 
 echo "Generating locales..."
-echo "LANG=de_DE.UTF-8" > /mnt/etc/locale.conf
+echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 sed -i 's/^#de_DE/de_DE/g' /mnt/etc/locale.gen
+sed -i 's/^#en_US/en_US/g' /mnt/etc/locale.gen
 arch-chroot /mnt locale-gen
 
 echo "Keyboard layout and localtime..."
@@ -156,7 +160,7 @@ arch-chroot /mnt/ ln -s /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 #####  Configure boot  ##### {{{1
 
 echo "Configuring bootmenu..."
-sed -i 's/^HOOKS=.*/HOOKS="base udev autodetect modconf block keyboard keymap encrypt lvm2 filesystems fsck"/g' /mnt/etc/mkinitcpio.conf
+sed -i 's/^HOOKS=.*/HOOKS="base udev keyboard autodetect modconf block keymap encrypt lvm2 filesystems fsck"/g' /mnt/etc/mkinitcpio.conf
 arch-chroot /mnt mkinitcpio -p linux
 arch-chroot /mnt bootctl --path=/boot install
 
@@ -172,7 +176,7 @@ title    Arch Linux
 linux    /vmlinuz-linux
 initrd   /intel-ucode.img
 initrd   /initramfs-linux.img
-options  cryptdevice=${part_root}:main root=/dev/mapper/main-root resume=/dev/mapper/main-swap lang=de locale=de_DE.UTF-8
+options  cryptdevice=${part_root}:main root=/dev/mapper/main-root resume=/dev/mapper/main-swap lang=en locale=en_US.UTF-8 pcie_aspm=off
 EOF
 
 # Auto update boot stuff
