@@ -6,3 +6,15 @@
       state: present
     tags:
       - rofi
+
+  - name: Link helper scripts and custom modi
+    become: yes
+    file:
+      state: link
+      src: "{{ dotfiles_path }}/rofi/scripts/{{ item }}"
+      dest: "/usr/local/bin/rofi-{{ item }}"
+      mode: "u=rx,g=rx,o=rx"
+    with_items:
+      - network-select.sh
+    tags:
+      - rofi:scripts
