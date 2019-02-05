@@ -16,3 +16,24 @@
     shell: pikaur -Sy --noconfirm i3-gaps-next-git 
     tags:
       - i3wm
+
+  - name: Link xinitrc
+    file:
+      src: "/home/{{ user_name }}/.dotfiles/.xinitrc"
+      dest: "/home/{{ user_name }}/.xinitrc"
+      state: link
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+    tags:
+      - i3wm
+      - xinit
+
+  - name: Link i3 config
+    file:
+      src: "/home/{{ user_name }}/.dotfiles/i3wm/config"
+      dest: "/home/{{ user_name }}/.config/i3/config"
+      state: link
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+    tags:
+      - i3wm:config
