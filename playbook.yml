@@ -12,6 +12,7 @@
 
     # Desktop
     - i3-gaps
+    - polybar
     - termite
     - rofi
     - brave

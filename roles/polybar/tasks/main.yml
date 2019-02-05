@@ -1,0 +1,45 @@
+---
+  - name: Install dependencies
+    become: yes
+    package:
+      name: jsoncpp
+      state: present
+    tags:
+      - i3wm:polybar
+
+  - name: Install polybar from AUR
+    become: yes
+    shell: pikaur -S --noconfirm polybar-git
+    tags:
+      - i3wm:polybar
+
+  - name: Ensure config directory
+    file:
+      state: directory
+      path: "{{ dotfiles_path }}/polybar/"
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+    tags:
+      - i3wm:polybar
+      
+
+  - name: Link launch script and config
+    file:
+      state: link
+      src: "{{ dotfiles_path }}/polybar/{{ item }}"
+      dest: "/home/{{ user_name }}/.config/polybar/{{ item }}"
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+    with_items:
+      - launch.sh
+      - config
+    tags:
+      - i3wm:polybar
+
+  - name: Make launch script executable
+    file:
+      path: "{{ dotfiles_path }}/polybar/launch.sh"
+      mode: "+x"
+    tags:
+      - i3wm:polybar
+
