@@ -7,6 +7,7 @@
     - ssh
     - fonts
       #- dotfiles
+    - git
     - vim
     - ranger
 
