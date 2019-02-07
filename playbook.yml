@@ -17,6 +17,7 @@
     - termite
     - rofi
     - brave
+    - nextcloud-client
 
 #- name: Special stuff for private devices only
 #  hosts:

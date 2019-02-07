@@ -1,0 +1,8 @@
+---
+  - name: Install the Nextcloud desktop client
+    become: yes
+    package:
+      name: nextcloud-client
+      state: present
+    tags:
+      - nextcloud
