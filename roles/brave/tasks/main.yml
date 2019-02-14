@@ -14,3 +14,14 @@
       - browser:brave
       - kernelparameter
 
+  - name: Link App shortcuts
+    become: yes
+    file:
+      state: link
+      src: "{{ dotfiles_path }}/brave/{{ item }}"
+      dest: "/usr/local/bin/{{ item }}"
+    with_items:
+      - meistertask
+    tags:
+      - browser:brave
+      - applinks
