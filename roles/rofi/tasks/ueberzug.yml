@@ -1,0 +1,8 @@
+---
+  - name: Install Überzug - w3mimgdisplay replacement
+    become: yes
+    pip:
+      name: ueberzug
+    tags:
+      - rofi
+      - ueberzug

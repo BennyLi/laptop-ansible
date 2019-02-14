@@ -7,6 +7,22 @@
     tags:
       - rofi
 
+  - name: Ensure config directory
+    file:
+      state: directory
+      path: "/home/{{ user_name }}/.config/rofi"
+    tags:
+      - rofi:config
+
+  - name: Link config
+    become: yes
+    file:
+      state: link
+      src: "{{ dotfiles_path }}/rofi/rofi.conf"
+      dest: "/home/{{ user_name }}/.config/rofi/config"
+    tags:
+      - rofi:config
+
   - name: Link helper scripts and custom modi
     become: yes
     file:
