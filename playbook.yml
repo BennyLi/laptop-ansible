@@ -13,6 +13,7 @@
     - ranger
     - pdf
     - keepass
+    - gnome-keyring
 
     # Desktop
     - i3-gaps

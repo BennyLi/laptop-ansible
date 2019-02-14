@@ -1,0 +1,45 @@
+---
+  - name: Install gnome-keyring
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gnome-keyring
+      - libsecret
+    tags:
+      - keyring
+
+  - name: Add gnome-keyring auth module to pam login
+    become: yes
+    lineinfile:
+      path: /etc/pam.d/login
+      insertafter: "^auth"
+      regexp: "auth       optional     pam_gnome_keyring.so"
+      line: "auth       optional     pam_gnome_keyring.so"
+    tags:
+      - keyring
+      - pam
+      
+  - name: Add gnome-keyring session module to pam login
+    become: yes
+    lineinfile:
+      path: /etc/pam.d/login
+      insertafter: "^session"
+      regexp: "session    optional     pam_gnome_keyring.so auto_start"
+      line: "session    optional     pam_gnome_keyring.so auto_start"
+    tags:
+      - keyring
+      - pam
+      
+  - name: Ensure xinitrc is linked from dotfiles
+    file:
+      state: link
+      src: "{{ dotfiles_path }}/.xinitrc"
+      dest: "/home/{{ user_name }}/.xinitrc"
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+    tags:
+      - dotfiles
+      - xserver
+      - keyring
