@@ -1,0 +1,16 @@
+---
+  - name: Install mupdf - OpenGL version
+    become: yes
+    package:
+      name: mupdf-gl
+      state: present
+    tags:
+      - pdf
+      - mupdf
+
+  - name: Install old MasterPDF version from AUR
+    become: yes
+    shell: pikaur -S --noconfirm masterpdfeditor-free
+    tags:
+      - pdf
+      - masterpdf
