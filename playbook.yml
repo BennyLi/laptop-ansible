@@ -12,6 +12,7 @@
     - vim
     - ranger
     - pdf
+    - keepass
 
     # Desktop
     - i3-gaps
