@@ -7,3 +7,22 @@
     tags:
       - terminal
       - termite
+
+  - name: Ensure config directory
+    file:
+      path: "/home/{{ user_name }}/.config/termite"
+      state: directory 
+      owner: "{{ user_name }}"
+      group: "{{ user_group }}"
+    tags:
+      - terminal
+      - termite
+
+  - name: Get the Nordic termite theme
+    get_url:
+      url: https://raw.githubusercontent.com/arcticicestudio/nord-termite/develop/src/config
+      dest: "/home/{{ user_name }}/.config/termite"
+    tags:
+      - terminal
+      - termite
+      - theme:nordic
