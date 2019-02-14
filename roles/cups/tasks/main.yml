@@ -1,0 +1,37 @@
+---
+  - name: Install cups printer stuff
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - cups
+      - cups-pdf
+    tags:
+      - cups
+      - printer
+
+  - name: Start and enable cups service
+    become: yes
+    service:
+      name: org.cups.cupsd.service
+      state: started
+      enabled: yes
+    tags:
+      - cups
+      - printer
+
+  - name: Install my printer
+    become: yes
+    shell: lpadmin -p EPSON_WORKFORCE -E -v "ipp://192.168.189.90:631/ipp/print" -m everywhere
+    tags:
+      - cups
+      - printer
+
+  - name: Set my printer as default
+    become: yes
+    shell: lpoptions -d EPSON_WORKFORCE
+    tags:
+      - cups
+      - printer
+
