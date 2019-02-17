@@ -1,11 +1,10 @@
 ---
   - name: Install some default fonts
     become: yes
-    package:
-      name: "{{ item }}"
+    pacman:
+      name: [ terminus-font, ttf-dejavu, noto-fonts, ttf-liberation, ttf-freefont, ttf-freefont ]
       state: present
-    with_items:
-      - terminus-font
+      update_cache: yes
     tags:
       - fonts
 
