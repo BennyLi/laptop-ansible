@@ -1,13 +1,10 @@
 ---
-  - name: Install i3 dependencies
+  - name: Install i3 (or desktop related) dependencies
     become: yes
-    package:
-      name: "{{ item }}"
+    pacman:
+      name: xorg-server, xorg-xinit, xorg-xhost, xorg-xprop, xorg-xwininfo
       state: present
-    with_items:
-      - xorg-server
-      - xorg-xinit
-      - xorg-xhost
+      update_cache: yes
     tags:
       - i3wm:deps
 
