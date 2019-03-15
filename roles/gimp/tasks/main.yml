@@ -1,0 +1,8 @@
+---
+- name: Install
+  become: yes
+  pacman:
+    name: gimp
+    state: present
+  tags:
+    - gimp
