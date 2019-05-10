@@ -1,0 +1,21 @@
+---
+- name: Install
+  become: yes
+  shell: pikaur -Sy --noconfirm softmaker-office-2018-bin
+  tags:
+    - office
+    - softmaker
+
+- name: Link startup wrapper for language settings
+  become: yes
+  file:
+    state: link
+    src: '{{ role_path }}/files/{{ item }}'
+    dest: /usr/local/bin/{{ item }}
+    mode: 'u=rwx,g=rx,o=rx'
+  with_items:
+    - planmaker18
+    - textmaker18
+  tags:
+    - office
+    - softmaker

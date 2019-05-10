@@ -1,0 +1,3 @@
+#! /usr/bin/sh
+
+LANG=de_DE.utf8 /usr/bin/planmaker18 "$@"
