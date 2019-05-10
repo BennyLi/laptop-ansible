@@ -1,0 +1,40 @@
+---
+#  - name: Install shotwells optional dependencies
+#    become: yes
+#    package:
+#      name: "{{ item }}"
+#      state: present
+#    with_items:
+#      - libdv-bin 
+#      - exiv2 
+#      - libgd-tools 
+#      - liblcms2-utils 
+#      - opus-tools 
+#      - librsvg2-bin 
+#      - libvisual-0.4-plugins 
+#      - gstreamer1.0-tools 
+#      - gphoto2 
+#    tags:
+#      - shotwell
+
+  - name: Install shotwell
+    become: yes
+    package:
+      name: shotwell
+      state: present
+    tags:
+      - shotwell
+
+  - name: Link shotwell helper scripts
+    become: yes
+    file:
+      state: link
+      src: '{{ dotfiles_path }}/shotwell/{{ item }}'
+      dest: '/usr/local/bin/{{ item }}'
+    with_items:
+      - shotwelldir
+      - shotwell-family
+      - shotwell-ebay
+      - shotwell-private
+    tags:
+      - shotwell
