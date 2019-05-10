@@ -15,3 +15,12 @@
       state: started
     tags:
       - docker
+
+  - name: Add me to the docker group so no sudo is needed
+    become: yes
+    user:
+      name: "{{ user_name }}"
+      groups: docker
+      append: yes
+    tags:
+      - docker
