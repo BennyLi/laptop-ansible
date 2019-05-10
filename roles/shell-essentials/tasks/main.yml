@@ -1,0 +1,25 @@
+---
+  - name: Install some shell essential tools
+    become: yes
+    pacman:
+      name: "tree"
+      state: present
+      update_cache: yes
+    tags:
+      - shell:essentials
+
+  - name: Link zshrc
+    file:
+      state: link
+      src: '{{ dotfiles_path }}/.zshrc'
+      dest: '/home/{{ user_name }}/.zshrc'
+    tags:
+      - dotfiles
+
+  - name: Link aliases
+    file:
+      state: link
+      src: '{{ dotfiles_path }}/.aliases'
+      dest: '/home/{{ user_name }}/.aliases'
+    tags:
+      - dotfiles

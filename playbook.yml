@@ -2,6 +2,7 @@
   hosts: all
   roles:
     - pikaur
+    - shell-essentials
     - docker
     - numlock
     - ssh
