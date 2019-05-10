@@ -1,0 +1,15 @@
+---
+  - name: Install tools for auto OCR
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - tesseract
+      - tesseract-data-deu
+      - tesseract-data-eng
+      - imagemagick
+      - mupdf-tools
+    tags:
+      - ocr
+      
