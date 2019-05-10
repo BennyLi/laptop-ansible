@@ -79,3 +79,6 @@
       - dotfiles
       - terminal
       - ranger
+
+  - name: Add Devicons to filetypes
+    import_tasks: devicons.yml
