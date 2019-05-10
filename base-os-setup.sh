@@ -137,7 +137,7 @@ mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | tee -a /etc/pacman.d/mirrorlist
 
 echo "Installing base system packages..."
-pacstrap /mnt/ base base-devel wpa_supplicant dialog intel-ucode git fish ansible
+pacstrap /mnt/ base base-devel wpa_supplicant dialog intel-ucode git zsh ansible
 
 echo "Generating fstab..."
 genfstab -p /mnt > /mnt/etc/fstab
@@ -197,8 +197,8 @@ EOF
 #####  User setup  ##### {{{1
 
 echo "Setting up you (the user)..."
-arch-chroot /mnt useradd --create-home --user-group --shell /usr/bin/fish --groups wheel,uucp,video,audio,storage,optical,games,input "$user"
-arch-chroot /mnt chsh -s /usr/bin/fish
+arch-chroot /mnt useradd --create-home --user-group --shell /usr/bin/zsh --groups wheel,uucp,video,audio,storage,optical,games,input "$user"
+arch-chroot /mnt chsh -s /usr/bin/zsh
 
 echo "$user:$password" | chpasswd --root /mnt
 echo "root:$password" | chpasswd --root /mnt
