@@ -1,0 +1,15 @@
+---
+  - name: Install
+    become: yes
+    pacman:
+      name: task
+      state: present
+      update_cache: yes
+    tags:
+      - taskwarrior
+
+  - name: tasksh install
+    become: yes
+    shell: pikaur -S --noconfirm tasksh
+    tags:
+      - taskwarrior
