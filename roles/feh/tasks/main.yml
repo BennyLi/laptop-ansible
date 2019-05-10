@@ -1,0 +1,9 @@
+---
+  - name: Install
+    become: yes
+    pacman:
+      name: feh
+      state: present
+      update_cache: yes
+    tags:
+      - feh
