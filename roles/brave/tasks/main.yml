@@ -22,6 +22,9 @@
       dest: "/usr/local/bin/{{ item }}"
     with_items:
       - meistertask
+      - kalendar
+      - moments
+      - notestation
     tags:
       - browser:brave
       - applinks
