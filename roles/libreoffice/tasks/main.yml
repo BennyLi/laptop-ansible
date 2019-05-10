@@ -1,0 +1,9 @@
+---
+  - name: Install
+    become: yes
+    pacman:
+      name: libreoffice-fresh, libreoffice-fresh-de, jre-openjdk
+      state: present
+      update_cache: yes
+    tags: 
+      - libreoffice
