@@ -28,6 +28,8 @@
     - nextcloud-client
     - thunar
     - gimp
+    - youtube-dl
+
 
 #- name: Special stuff for private devices only
 #  hosts:

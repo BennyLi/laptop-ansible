@@ -1,0 +1,10 @@
+---
+- name: Install with dependencies
+  become: yes
+  pacman:
+    name: ffmpeg, rtmpdump, youtube-dl
+    state: present
+    update_cache: yes
+  tags:
+    - youtube-dl
+    - youtube-dl:deps
