@@ -1,0 +1,9 @@
+---
+  - name: Install
+    become: yes
+    pacman:
+      name: thunar, tumbler, raw-thumbnailer, gvfs, gvfs-smb, gvfs-nfs, gvfs-gphoto2, thunar-volman
+      state: present
+      update_cache: yes
+    tags:
+      - thunar

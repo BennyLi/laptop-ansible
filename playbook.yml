@@ -26,6 +26,7 @@
     - rofi
     - brave
     - nextcloud-client
+    - thunar
     - gimp
 
 #- name: Special stuff for private devices only
