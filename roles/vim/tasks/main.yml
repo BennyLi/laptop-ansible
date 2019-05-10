@@ -19,6 +19,15 @@
     owner: "{{ user_name }}"
     group: "{{ user_group }}"
 
+- name: Install taskwiki dependencies
+  become: yes
+  pip:
+    name: tasklib
+    executable: pip3
+  tags:
+    - vim
+    - vimwiki
+    - taskwiki
 
 - name: Link config file
   file:
